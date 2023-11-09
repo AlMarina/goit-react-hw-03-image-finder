@@ -6,6 +6,7 @@ import {
   InputSerch,
 } from './Searchbar.styled';
 import { BsSearch } from 'react-icons/bs';
+import toast from 'react-hot-toast';
 
 export class Searchbar extends Component {
   state = {
@@ -20,6 +21,17 @@ export class Searchbar extends Component {
 
   submitForm = evt => {
     evt.preventDefault();
+    if (this.state.name.trim() === '')
+      return toast('Can not be empty!', {
+        icon: '☝',
+        style: {
+          borderRadius: '10px',
+          background: '#333',
+          color: '#fff',
+          fontWeight: 700,
+        },
+      });
+
     this.props.onSubmit(this.state.name);
     this.setState({ name: '' });
   };

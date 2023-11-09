@@ -30,11 +30,8 @@ export class App extends Component {
       try {
         this.setState({ isLoading: true, error: false });
 
-        console.log(`name: ${this.state.name}`);
         const idx = this.state.name.indexOf('/');
-        console.log(`idx: ${idx}`);
         const clearSearchName = this.state.name.slice(idx + 1);
-        console.log(clearSearchName);
 
         const { hits, totalHits } = await fetchSerch(
           clearSearchName,
@@ -42,16 +39,19 @@ export class App extends Component {
           PER_PAGE
         );
 
-        this.setState({ img: [...hits], totalImg: totalHits });
-
-        toast.success('Yes! We found image!', {
-          style: {
-            border: '1px solid #713200',
-            padding: '10px',
-            color: '#713200',
-            fontWeight: 700,
-          },
-        });
+        this.setState(prevState => ({
+          img: [...prevState.img, ...hits],
+          totalImg: totalHits,
+        }));
+        if (this.state.page === 1)
+          toast.success('Yes! We found image!', {
+            style: {
+              border: '1px solid #713200',
+              padding: '10px',
+              color: '#713200',
+              fontWeight: 700,
+            },
+          });
       } catch (error) {
         this.setState({ error: error.message });
         toast.error('Ooops, there was an error...', {
@@ -68,7 +68,7 @@ export class App extends Component {
   }
 
   onSubmit = name => {
-    this.setState({ name: `${Date.now()}/${name}` });
+    this.setState({ name: `${Date.now()}/${name}`, page: 1, img: [] });
   };
 
   onClickLoad = () => {
